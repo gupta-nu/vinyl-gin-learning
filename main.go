@@ -27,10 +27,27 @@ var albums = []album{
 
 func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
+	//statusok is req succeded and i'm returning the data used for GET req
+}
+
+//logic to add new album into existing list
+//code to route the post request to logic
+
+func postAlbums(c *gin.Context) {
+	var newAlbum album //bindJSON rads the json payload from http req
+	//and map(bind) it to go variable(newalubm)
+	if err := c.BindJSON(&newAlbum); err != nil {
+		return
+	} //err checking, if err!=nil, there was error and jscon couldn't be parsed;
+
+	albums = append(albums, newAlbum)
+	c.IndentedJSON(http.StatusCreated, newAlbum)
+	//statusCreated is for pos requests that add new resources
 }
 
 func main() {
 	router := gin.Default() // initi gin rounter
 	router.GET("/albums", getAlbums)
+	router.POST("/albums", postAlbums)
 	router.Run("localhost:8080")
 }
